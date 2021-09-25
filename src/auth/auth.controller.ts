@@ -4,6 +4,6 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Get('verify/token')
 @UseGuards(AuthGuard('bearer'))
-findAll(); {
+ {
   return [];
 }

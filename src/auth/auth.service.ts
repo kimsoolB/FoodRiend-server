@@ -10,14 +10,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(token: string): Promise<any> {
-    const user = await this.usersService.findAll();
-    if (!user) {
-      return null;
-    }
-    return user;
-  }
-
   async createToken(user: Users) {
     const data = {
       user_no: user.id,
@@ -26,7 +18,7 @@ export class AuthService {
 
     return this.jwtService.sign(data, {
       secret: process.env.JWT,
-      expiresIn: '48H',
+      expiresIn: '48h',
     });
   }
 

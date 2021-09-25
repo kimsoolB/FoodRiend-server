@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '../../dist/users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 
@@ -27,6 +28,8 @@ export class JwtGuard extends AuthGuard('jwt') {
       throw new HttpException('Token 전송 안됨', HttpStatus.UNAUTHORIZED);
     }
 
+    //토큰 만료 시간을 계산해서 남은 시간이 5분 미만일 경우 401을 띄우려고 했습니다. 
+    //근데 지금보니 그냥,, 만료된 이후에 boolean값만 체크하면 되지 않았을까 싶네요..
     const token = authorization.replace('Bearer ', '');
     const tokenValidate = await this.validate(token);
     if (tokenValidate.tokenReissue) {
@@ -50,13 +53,12 @@ export class JwtGuard extends AuthGuard('jwt') {
 
       if (token_verify.user_token === 'loginToken') {
         if (time_remaining < 5) {
-          const access_token_user = await this.userService.findOne();
+          const access_token_user = await this.userService;
           return {
             tokenReissue: true,
           };
         } else {
-          // > 5
-          const user = await this.userService.findAll();
+          const user = await this.userService;
           return {
             user,
             tokenReissue: false,
